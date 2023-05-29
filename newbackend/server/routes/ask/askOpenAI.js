@@ -1,8 +1,8 @@
 /*
  * @Author: Ethan Zhang
  * @Date: 2023-05-23 21:08:38
- * @LastEditTime: 2023-05-29 00:22:23
- * @FilePath: /guangqi/newbackend/server/routes/ask/askOpenAI.js
+ * @LastEditTime: 2023-05-29 14:35:43
+ * @FilePath: /siyu/newbackend/server/routes/ask/askOpenAI.js
  * @Description:
  *
  * AbortController. This is a built-in JavaScript API that allows you to cancel ongoing tasks. In this script, it's used to abort ongoing requests to the OpenAI API.
@@ -34,9 +34,9 @@ const requireJwtAuth = require("../../../middleware/requireJwtAuth");
 
 const abortControllers = new Map();
 
-function countTokens(str) {
-  return str.split(" ").length;
-}
+// function countTokens(str) {
+//   return str.split(" ").length;
+// }
 
 //The /abort endpoint allows the client to cancel an ongoing request.
 //It uses the abortKey provided in the request body to find the corresponding AbortController and call its abortAsk method.
@@ -230,11 +230,11 @@ const ask = async ({
     });
 
     // Update user usage after the SSE call to OpenAI API
-    const userTokens = countTokens(userMessage.text);
-    const responseTokens = countTokens(response.text);
+    // const userTokens = countTokens(userMessage.text);
+    // const responseTokens = countTokens(response.text);
     await updateUserUsage(userId, {
       api: 1,
-      tokens: userTokens + responseTokens,
+      tokens: 0,
     });
 
     abortControllers.delete(abortKey);
