@@ -1,0 +1,75 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build, tag, and push Docker image to Docker Hub
+      run: |
+        cd newbackend
+        docker buildx build --platform linux/arm64 --push -t ethan929/guangqi:${{ github.sha }} .
+
+    - name: Install SSH key
+      uses: webfactory/ssh-agent@v0.5.2
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy to EC2
+      env:
+        HOST: 0.0.0.0
+        NODE_ENV: production
+        MONGO_URI: ${{ secrets.MONGO_URI }}
+        MEILI_HOST: http://meilisearch:7700
+        MEILI_HTTP_ADDR: meilisearch:7700
+        MEILI_MASTER_KEY: DrhYf7zENyR6AlUCKmnz0eYASOQdl6zxH7s7MKFSfFCt
+        OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+        OPENAI_MODELS: gpt-3.5-turbo
+        BINGAI_TOKEN: user_provided
+        CHATGPT_TOKEN: user_provided
+        CHATGPT_MODELS: text-davinci-002-render-sha,gpt-4
+        SEARCH: false
+        JWT_SECRET_PROD: 461b9ff6d77580874e0754a498a72946f705ad1e6f475d5e2b7d3d20bb8afe0e
+        SESSION_EXPIRY: 604800
+
+      run: |
+        ssh -o StrictHostKeyChecking=no ec2-user@13.215.125.105 "\
+        docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} && \
+        docker pull ethan929/guangqi:${{ github.sha }} && \
+        docker container stop nodejs || true && \
+        docker container rm nodejs || true && \
+        docker run -d --name nodejs -p 443:3080 \
+        -e HOST=0.0.0.0 \
+        -e NODE_ENV=production \
+        -e MONGO_URI='${{ env.MONGO_URI }}' \
+        -e MEILI_HOST='${{ env.MEILI_HOST }}' \
+        -e MEILI_HTTP_ADDR='${{ env.MEILI_HTTP_ADDR }}' \
+        -e MEILI_MASTER_KEY='${{ env.MEILI_MASTER_KEY }}' \
+        -e OPENAI_KEY='${{ env.OPENAI_KEY }}' \
+        -e OPENAI_MODELS='${{ env.OPENAI_MODELS }}' \
+        -e BINGAI_TOKEN='${{ env.BINGAI_TOKEN }}' \
+        -e CHATGPT_TOKEN='${{ env.CHATGPT_TOKEN }}' \
+        -e CHATGPT_MODELS='${{ env.CHATGPT_MODELS }}' \
+        -e SEARCH='${{ env.SEARCH }}' \
+        -e JWT_SECRET_PROD='${{ env.JWT_SECRET_PROD }}' \
+        -e SESSION_EXPIRY='${{ env.SESSION_EXPIRY }}' \
+        ethan929/guangqi:${{ github.sha }}"
+
+

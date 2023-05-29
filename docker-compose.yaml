@@ -2,54 +2,6 @@
 # # The - "3000:3000" syntax in the Docker Compose file is used to 
 # # map ports between the container and the host machine.
 # # The format is - "<host-port>:<container-port>".
-
-
-# # PostgreSQL, by default, listens on port 5432.
-# # So if you want to access your PostgreSQL database service from your Express application or any other service, you would typically use port 5432.
-
-
-# version: '3'
-# services:
-#   db:
-#     image: postgres:13-alpine
-#     restart: always
-#     environment:
-#       POSTGRES_USER: ${POSTGRES_USER}
-#       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-#       POSTGRES_DB: ${POSTGRES_DB}
-#     volumes:
-#       - ./db/setup.sql:/docker-entrypoint-initdb.d/setup.sql # 数据永久化
-#     ports:
-#       - "5432:5432"
-#   app:
-#     build:
-#       context: ./backend
-#       dockerfile: Dockerfile
-#     image: ethan929/nodejs:100
-#     # volumes:
-#     #   - ./backend:/app  # This mounts the backend directory to /app in the container # help sync code development
-#     restart: always
-#     ports:
-#       - "3001:3001"
-#     depends_on:
-#       - db
-#     environment:
-#       - JWT_SECRET=${JWT_SECRET}
-#       - EMAIL_USER=${EMAIL_USER}
-#       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
-#       - DB_HOST=${DB_HOST}
-#       - DB_PORT=${DB_PORT}
-#       - DB_USER=${DB_USER}
-#       - DB_PASSWORD=${DB_PASSWORD}
-#       - DB_NAME=${DB_NAME}
-#       - NODE_ENV=${NODE_ENV}
-#       - OPENAI_API_KEY=${OPENAI_API_KEY}
-#       - ORGANIZATION_KEY=${ORGANIZATION_KEY}
-
-
-# # The volumes section for the db service mounts your setup.sql file in the special directory /docker-entrypoint-initdb.d/. Any .sql files in this directory will be automatically executed in alphabetical order when the container starts.
-
-
 version: "3.4"
 
 services:
