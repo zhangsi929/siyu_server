@@ -1,8 +1,8 @@
 /*
  * @Author: Ethan Zhang
  * @Date: 2023-05-23 21:08:32
- * @LastEditTime: 2023-05-29 00:13:45
- * @FilePath: /guangqi/newbackend/models/User.js
+ * @LastEditTime: 2023-05-29 14:46:32
+ * @FilePath: /siyu/newbackend/models/User.js
  * @Description:
  *
  * jwt token 是在user这个file 里的一个 mehtod 里 生成的
@@ -209,31 +209,29 @@ module.exports.validateUser = (user) => {
   return schema.validate(user);
 };
 
-module.exports = {
-  async updateUserUsage(userId, { api, tokens }) {
-    try {
-      const user = await User.findById(userId);
-
-      if (!user) {
-        throw new Error("User not found.");
-      }
-
-      user.used_api += api;
-      user.used_tokens += tokens;
-
-      await user.save();
-
-      return {
-        used_api: user.used_api,
-        used_tokens: user.used_tokens,
-      };
-    } catch (err) {
-      console.error(`Error updating user usage: ${err}`);
-      throw new Error("Failed to update user usage.");
-    }
-  },
-};
-
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+async function updateUserUsage(userId, { api, tokens }) {
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error("User not found.");
+    }
+
+    user.used_api += api;
+    user.used_tokens += tokens;
+
+    await user.save();
+
+    return {
+      used_api: user.used_api,
+      used_tokens: user.used_tokens,
+    };
+  } catch (err) {
+    console.error(`Error updating user usage: ${err}`);
+    throw new Error("Failed to update user usage.");
+  }
+}
+
+module.exports = { User, updateUserUsage };
