@@ -1,7 +1,7 @@
 /*
  * @Author: Ethan Zhang
  * @Date: 2023-05-23 21:08:38
- * @LastEditTime: 2023-05-29 14:35:43
+ * @LastEditTime: 2023-05-29 16:13:20
  * @FilePath: /siyu/newbackend/server/routes/ask/askOpenAI.js
  * @Description:
  *
@@ -200,6 +200,12 @@ const ask = async ({
         endpointOption,
         userMessage,
         responseMessage,
+      });
+
+      // Update user usage after aborting the request to OpenAI API
+      await updateUserUsage(userId, {
+        api: 1,
+        tokens: 0, // You might need to adjust the token usage based on actual usage before the abort
       });
 
       return {
