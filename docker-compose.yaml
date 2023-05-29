@@ -20,7 +20,7 @@ services:
       - ./newbackend/.env
     environment:
       - HOST=0.0.0.0
-      - NODE_ENV=production
+      - NODE_ENV=development
       - MONGO_URI=mongodb://mongodb:27017/chatgpt-clone
       - MEILI_HOST=http://meilisearch:7700
       - MEILI_HTTP_ADDR=meilisearch:7700

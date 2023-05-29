@@ -1,8 +1,8 @@
 /*
  * @Author: Ethan Zhang
  * @Date: 2023-05-23 21:08:38
- * @LastEditTime: 2023-05-27 00:24:52
- * @FilePath: /guangqi/newbackend/server/index.js
+ * @LastEditTime: 2023-05-29 15:12:03
+ * @FilePath: /siyu/newbackend/server/index.js
  * @Description:
  *
  * Copyright (c) 2023 Ethan Zhang, All Rights Reserved.
@@ -59,54 +59,60 @@ const projectPath = path.join(__dirname, "..", "..", "client");
   app.use("/api/tokenizer", routes.tokenizer);
   app.use("/api/endpoints", routes.endpoints);
 
-  // SSL Certificate files
-  const privateKey = fs.readFileSync(
-    path.join(__dirname, "ssl", "private.key"),
-    "utf8"
-  );
-  const certificate = fs.readFileSync(
-    path.join(__dirname, "ssl", "api_siyuhub_com.crt"),
-    "utf8"
-  );
-  const ca = [
-    fs.readFileSync(
-      path.join(
-        __dirname,
-        "ssl",
-        "Sectigo_RSA_Domain_Validation_Secure_Server_CA.crt"
+  if (process.env.NODE_ENV === "production") {
+    // SSL Certificate files
+    const privateKey = fs.readFileSync(
+      path.join(__dirname, "ssl", "private.key"),
+      "utf8"
+    );
+    const certificate = fs.readFileSync(
+      path.join(__dirname, "ssl", "api_siyuhub_com.crt"),
+      "utf8"
+    );
+    const ca = [
+      fs.readFileSync(
+        path.join(
+          __dirname,
+          "ssl",
+          "Sectigo_RSA_Domain_Validation_Secure_Server_CA.crt"
+        ),
+        "utf8"
       ),
-      "utf8"
-    ),
-    fs.readFileSync(
-      path.join(__dirname, "ssl", "USERTrust_RSA_Certification_Authority.crt"),
-      "utf8"
-    ),
-  ];
+      fs.readFileSync(
+        path.join(
+          __dirname,
+          "ssl",
+          "USERTrust_RSA_Certification_Authority.crt"
+        ),
+        "utf8"
+      ),
+    ];
 
-  // HTTPS server options
-  const options = {
-    key: privateKey,
-    cert: certificate,
-    ca: ca,
-  };
+    // HTTPS server options
+    const options = {
+      key: privateKey,
+      cert: certificate,
+      ca: ca,
+    };
 
-  // Start the HTTPS server
-  https.createServer(options, app).listen(port, () => {
-    console.log(`Server https listening on port ${port}`);
-  });
-
-  // app.listen(port, host, () => {
-  //   if (host == "0.0.0.0")
-  //     console.log(
-  //       `Server listening on all interface at port ahahahah ${port}. Use http://localhost:${port} to access it`
-  //     );
-  //   else
-  //     console.log(
-  //       `Server listening at http://${
-  //         host == "0.0.0.0" ? "localhost" : host
-  //       }:${port}`
-  //     );
-  // });
+    // Start the HTTPS server
+    https.createServer(options, app).listen(port, () => {
+      console.log(`Server https listening on port ${port}`);
+    });
+  } else {
+    app.listen(port, host, () => {
+      if (host == "0.0.0.0")
+        console.log(
+          `Server listening on all interface at port ahahahah ${port}. Use http://localhost:${port} to access it`
+        );
+      else
+        console.log(
+          `Server listening at http://${
+            host == "0.0.0.0" ? "localhost" : host
+          }:${port}`
+        );
+    });
+  }
 })();
 
 let messageCount = 0;
