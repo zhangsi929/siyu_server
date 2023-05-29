@@ -1,7 +1,7 @@
 /*
  * @Author: Ethan Zhang
  * @Date: 2023-05-23 21:08:32
- * @LastEditTime: 2023-05-29 14:46:32
+ * @LastEditTime: 2023-05-29 14:59:24
  * @FilePath: /siyu/newbackend/models/User.js
  * @Description:
  *
@@ -210,28 +210,4 @@ module.exports.validateUser = (user) => {
 };
 
 const User = mongoose.model("User", userSchema);
-
-async function updateUserUsage(userId, { api, tokens }) {
-  try {
-    const user = await User.findById(userId);
-
-    if (!user) {
-      throw new Error("User not found.");
-    }
-
-    user.used_api += api;
-    user.used_tokens += tokens;
-
-    await user.save();
-
-    return {
-      used_api: user.used_api,
-      used_tokens: user.used_tokens,
-    };
-  } catch (err) {
-    console.error(`Error updating user usage: ${err}`);
-    throw new Error("Failed to update user usage.");
-  }
-}
-
-module.exports = { User, updateUserUsage };
+module.exports = User;
