@@ -60,7 +60,7 @@ const registrationController = async (req, res) => {
         httpOnly: false,
         secure: isProduction,
       });
-      res.status(status).send({ user });
+      res.status(status).send({ token, user });
     } else {
       const { status, message } = response;
       res.status(status).send({ message });
