@@ -1,7 +1,7 @@
 /*
  * @Author: Ethan Zhang
  * @Date: 2023-05-23 21:08:32
- * @LastEditTime: 2023-05-29 14:59:24
+ * @LastEditTime: 2023-05-29 19:03:57
  * @FilePath: /siyu/newbackend/models/User.js
  * @Description:
  *
@@ -103,7 +103,7 @@ const userSchema = mongoose.Schema(
     },
     membership_level: {
       type: String,
-      default: "basic", // 或者你想要的其他默认值
+      default: "内测用户", // 或者你想要的其他默认值
     },
   },
   { timestamps: true }

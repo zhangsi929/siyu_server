@@ -1,7 +1,7 @@
 /*
  * @Author: Ethan Zhang
  * @Date: 2023-05-23 21:08:38
- * @LastEditTime: 2023-05-29 15:12:03
+ * @LastEditTime: 2023-05-29 16:31:45
  * @FilePath: /siyu/newbackend/server/index.js
  * @Description:
  *
@@ -58,6 +58,7 @@ const projectPath = path.join(__dirname, "..", "..", "client");
   app.use("/api/prompts", routes.prompts);
   app.use("/api/tokenizer", routes.tokenizer);
   app.use("/api/endpoints", routes.endpoints);
+  app.use("/api/user", routes.user);
 
   if (process.env.NODE_ENV === "production") {
     // SSL Certificate files
