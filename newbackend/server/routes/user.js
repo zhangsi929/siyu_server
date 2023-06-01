@@ -1,3 +1,12 @@
+/*
+ * @Author: Ethan Zhang
+ * @Date: 2023-05-29 16:33:23
+ * @LastEditTime: 2023-05-31 21:19:55
+ * @FilePath: /siyu/newbackend/server/routes/user.js
+ * @Description:
+ *
+ * Copyright (c) 2023 Ethan Zhang, All Rights Reserved.
+ */
 const express = require("express");
 const router = express.Router();
 const requireJwtAuth = require("../../middleware/requireJwtAuth");
@@ -24,6 +33,7 @@ router.get("/stats", requireJwtAuth, async (req, res) => {
       api_balance: user.api_balance,
       used_api: user.used_api,
       membership_level: user.membership_level,
+      user_level: user.user_level,
     });
   } catch (err) {
     console.error(err);

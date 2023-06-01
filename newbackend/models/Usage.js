@@ -1,7 +1,7 @@
 /*
  * @Author: Ethan Zhang
  * @Date: 2023-05-29 14:59:12
- * @LastEditTime: 2023-05-29 15:49:21
+ * @LastEditTime: 2023-05-31 21:22:23
  * @FilePath: /siyu/newbackend/models/Usage.js
  * @Description:
  *
@@ -18,6 +18,7 @@ module.exports = {
       }
 
       user.used_api += api;
+      user.api_balance -= 1;
       user.used_tokens += tokens;
 
       await user.save();
