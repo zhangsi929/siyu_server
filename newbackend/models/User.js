@@ -1,7 +1,7 @@
 /*
  * @Author: Ethan Zhang
  * @Date: 2023-05-23 21:08:32
- * @LastEditTime: 2023-05-29 19:03:57
+ * @LastEditTime: 2023-05-31 21:03:20
  * @FilePath: /siyu/newbackend/models/User.js
  * @Description:
  *
@@ -95,7 +95,7 @@ const userSchema = mongoose.Schema(
     },
     api_balance: {
       type: Number,
-      default: 0,
+      default: 100,
     },
     used_api: {
       type: Number,
@@ -103,7 +103,7 @@ const userSchema = mongoose.Schema(
     },
     membership_level: {
       type: String,
-      default: "内测用户", // 或者你想要的其他默认值
+      default: "1", // level 101 102 103 黄金 白金 星钻
     },
   },
   { timestamps: true }
