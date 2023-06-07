@@ -6,7 +6,92 @@ const {
   resetPassword,
 } = require("../services/auth.service");
 
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+const UserVerification = require("../../models/schema/userVerificationSchema");
+const User = require("../../models/User");
+
 const isProduction = process.env.NODE_ENV === "production";
+
+const transporter = nodemailer.createTransport({
+  host: "smtpout.secureserver.net",
+  secure: true,
+  secureConnection: false, // TLS requires secureConnection to be false
+  tls: {
+    ciphers: "SSLv3",
+  },
+  requireTLS: true,
+  port: 465,
+  debug: true,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+
+const sendEmail = (email, code) => {
+  return new Promise((resolve, reject) => {
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Your Verification Code",
+      text: `Your verification code is: ${code}`,
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        reject(error);
+      } else {
+        console.log("Email sent: " + info.response);
+        resolve("Success");
+      }
+    });
+  });
+};
+
+const sendEmailCodeController = async (req, res) => {
+  try {
+    console.log("sendEmailCodeController");
+    console.log(req.body);
+    const email = req.body.email; // accessing email from req.body
+    // Check if user exists already
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      throw new Error("该邮箱已被注册。");
+    }
+
+    // Check if there's an existing verification entry
+    const existingVerification = await UserVerification.findOne({ email });
+    if (existingVerification) {
+      await UserVerification.deleteOne({ email });
+    }
+
+    // Generate 4 digits alphanumeric code
+    const code = crypto.randomBytes(2).toString("hex");
+
+    // Send email using your sendEmail function
+    const emailResponse = await sendEmail(email, code);
+
+    // Log the emailResponse for debugging
+    console.log("Email Response:", emailResponse);
+
+    // If email is successfully sent, save the verification code and email in DB
+    if (emailResponse === "Success") {
+      console.log("Email sent successfully");
+      const newVerification = new UserVerification({ email, code });
+      await newVerification.save();
+      console.log("Saving verification code in DB");
+      res.status(200).json({
+        message: "邮箱验证码成功发送。请检查您的邮箱。",
+      });
+    } else {
+      res.status(500).json({
+        message: "邮箱验证码发送失败。请稍后再试。",
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({ status: 500, message: err.message });
+  }
+};
 
 const loginController = async (req, res) => {
   try {
@@ -165,4 +250,5 @@ module.exports = {
   registrationController,
   resetPasswordRequestController,
   resetPasswordController,
+  sendEmailCodeController,
 };

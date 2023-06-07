@@ -48,6 +48,8 @@ jobs:
           SEARCH: false
           JWT_SECRET_PROD: 461b9ff6d77580874e0754a498a72946f705ad1e6f475d5e2b7d3d20bb8afe0e
           SESSION_EXPIRY: 604800
+          EMAIL_USER: suppport@siyuhub.com
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD}}
 
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@13.215.125.105 "\
@@ -70,4 +72,6 @@ jobs:
           -e SEARCH='${{ env.SEARCH }}' \
           -e JWT_SECRET_PROD='${{ env.JWT_SECRET_PROD }}' \
           -e SESSION_EXPIRY='${{ env.SESSION_EXPIRY }}' \
+          -e EMAIL_USER='${{ env.EMAIL_USER }}' \
+          -e EMAIL_PASSWORD='${{ env.EMAIL_PASSWORD }}' \
           ethan929/guangqi:${{ github.sha }}"
