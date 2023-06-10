@@ -34,8 +34,8 @@ const sendEmail = (email, code) => {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      subject: "Your Verification Code",
-      text: `Your verification code is: ${code}`,
+      subject: "思渝AI - 邮箱验证码",
+      text: `尊敬的用户您好, 欢迎注册思渝A! 您的邮箱验证码: ${code}`,
     };
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
