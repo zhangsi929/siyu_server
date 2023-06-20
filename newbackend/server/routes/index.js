@@ -1,7 +1,7 @@
 /*
  * @Author: Ethan Zhang
  * @Date: 2023-05-23 21:08:38
- * @LastEditTime: 2023-05-29 16:57:52
+ * @LastEditTime: 2023-06-10 16:18:03
  * @FilePath: /siyu/newbackend/server/routes/index.js
  * @Description:
  *
@@ -18,6 +18,7 @@ const auth = require("./auth");
 const oauth = require("./oauth");
 const { router: endpoints } = require("./endpoints");
 const user = require("./user");
+const pay = require("./pay");
 
 module.exports = {
   search,
@@ -31,4 +32,5 @@ module.exports = {
   tokenizer,
   endpoints,
   user,
+  pay,
 };
